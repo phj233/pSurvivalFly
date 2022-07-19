@@ -54,7 +54,7 @@ function p_Gui(player){
     let playerGui = mc.newCustomForm();
     playerGui.setTitle("§6§lpSurvivalFly");
     playerGui.addInput("您需要的飞行时长(分)：","","5");
-    playerGui.addLabel(`§e目前单价-${price}-金币`);
+    playerGui.addLabel(`§6目前单价§e-${price}-§6金币`);
     player.sendForm(playerGui,(player,data) => {
         if(data!=0){
             playerFly(player,data[0]);
@@ -69,7 +69,7 @@ function mgr_Gui(player){
     let onlinePlayer=getolplayerarr();
     mgrGui.setTitle("§6§lpsFly-mgr");
     mgrGui.addDropdown("选择一个玩家让他飞行",onlinePlayer);
-    mgrGui.addInput("飞行时间(分)","5");
+    mgrGui.addInput("飞行时间(分)","1");
     player.sendForm(mgrGui,(player,data)=>{
         if(data!=null){
             playerFly(data[0],data[1])
@@ -79,15 +79,18 @@ function mgr_Gui(player){
     })
 }
 
-function playerFly(pl,time){
+function playerFly(pl,data){
+    let time = getNumber(data);
     if(!pl.isOP()){
-        money.reduce(pl.xuid,time*60*1000);    
+        money.reduce(player,time*price);    
     }
-    mc.runcmd(`ability ${pl.realName} mayfly true`);
-    setTimeout((pl)=>{
-        mc.runcmd(`ability ${pl.realName} mayfly false`);
+    mc.runcmd(`ability ${player} mayfly true`);
+    setTimeout((player)=>{
+        mc.runcmd(`ability ${player} mayfly false`);
     },time*60*1000);
 }
     
-
+function getNumber(data) {
+    return JSON.parse(data);
+}
 
