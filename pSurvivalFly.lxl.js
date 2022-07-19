@@ -54,7 +54,7 @@ function p_Gui(player){
     let playerGui = mc.newCustomForm();
     playerGui.setTitle("§6§lpSurvivalFly");
     playerGui.addInput("您需要的飞行时长(分)：","","5");
-    playerGui.addLabel(`§6目前单价§e-${price}-§6金币`);
+    playerGui.addLabel(`§6目前每分钟§e-${price}-§6金币`);
     player.sendForm(playerGui,(player,data) => {
         if(data!=0){
             playerFly(player,data[0]);
@@ -81,16 +81,17 @@ function mgr_Gui(player){
 
 function playerFly(pl,data){
     let time = getNumber(data);
+    time=Number(time);
     let player = pl.realName;
     if(!pl.isOP()){
         money.reduce(pl.xuid,time*price);    
     }
     mc.runcmd(`ability ${player} mayfly true`);
-    setTimeout((player)=>{
+    setTimeout(function(){
         mc.runcmd(`ability ${player} mayfly false`);
     },time*60*1000);
 }
-    
+
 function getNumber(data) {
     return JSON.parse(data);
 }
