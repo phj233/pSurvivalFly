@@ -81,8 +81,9 @@ function mgr_Gui(player){
 
 function playerFly(pl,data){
     let time = getNumber(data);
+    let player = pl.realName;
     if(!pl.isOP()){
-        money.reduce(player,time*price);    
+        money.reduce(pl.xuid,time*price);    
     }
     mc.runcmd(`ability ${player} mayfly true`);
     setTimeout((player)=>{
