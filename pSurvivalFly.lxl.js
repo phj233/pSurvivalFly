@@ -74,19 +74,19 @@ function mgr_Gui(player){
         if(data!=null){
             playerFly(data[0],data[1])
         } else{
-
+            player.tell("请输入飞行时间",4);
         }
     })
 }
 
 function playerFly(pl,time){
     if(!pl.isOP()){
-        money.reduce(pl.xuid,time*60*1000);
-        
-        setTimeout((pl)=>{
-        mc.runcmd(``)
-    },time*60*1000);
+        money.reduce(pl.xuid,time*60*1000);    
     }
+    mc.runcmd(`ability ${pl.realName} mayfly true`);
+    setTimeout((pl)=>{
+        mc.runcmd(`ability ${pl.realName} mayfly false`);
+    },time*60*1000);
 }
     
 
