@@ -6,13 +6,11 @@ var PluginIntroDuction = "生存飞行";
 var PluginVersion = [1,0,0];
 var PluginOtherInformation = { "插件作者": "phj233" };
 ll.registerPlugin(PluginName, PluginIntroDuction, PluginVersion, PluginOtherInformation);
-
-var price = 60;
  
-// if(!File.exists(`.\\plugins\\${pluginName}\\config.json`)){
-//     var conf = new JsonConfigFile(`.\\plugins\\${pluginName}\\config.json`);
-//     conf.init("price",60);
-// }
+if(!File.exists(`.\\plugins\\${pluginName}\\config.json`)){
+    var conf = new JsonConfigFile(`.\\plugins\\${pluginName}\\config.json`);
+    conf.init("price",60);
+}
 
 mc.listen("onServerStarted", () => {
     let cmd = mc.newCommand("psfly", "§6pfly§e生存飞行",PermType.Any);
@@ -54,7 +52,7 @@ function p_Gui(player){
     let playerGui = mc.newCustomForm();
     playerGui.setTitle("§6§lpSurvivalFly");
     playerGui.addInput("您需要的飞行时长(分)：","","5");
-    playerGui.addLabel(`§6目前每分钟§e-${price}-§6金币`);
+    playerGui.addLabel(`§6目前每分钟§e-${conf.get(price)}-§6金币`);
     player.sendForm(playerGui,(player,data) => {
         if(data!=0){
             playerFly(player,data[0]);
@@ -89,6 +87,9 @@ function playerFly(pl,data){
     mc.runcmd(`ability ${player} mayfly true`);
     setTimeout(function(){
         mc.runcmd(`ability ${player} mayfly false`);
+        if(pl.inAir){
+            mc.runcmd(`effect ${player} slow_falling 35`);
+        }
     },time*60*1000);
 }
 
