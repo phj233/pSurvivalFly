@@ -7,8 +7,8 @@ var PluginVersion = [1,0,0];
 var PluginOtherInformation = { "插件作者": "phj233" };
 ll.registerPlugin(PluginName, PluginIntroDuction, PluginVersion, PluginOtherInformation);
  
-if(!File.exists(`.\\plugins\\${pluginName}\\config.json`)){
-    var conf = new JsonConfigFile(`.\\plugins\\${pluginName}\\config.json`);
+if(!File.exists(`.\\plugins\\${PluginName}\\config.json`)){
+    var conf = new JsonConfigFile(`.\\plugins\\${PluginName}\\config.json`);
     conf.init("price",60);
 }
 
@@ -52,7 +52,7 @@ function p_Gui(player){
     let playerGui = mc.newCustomForm();
     playerGui.setTitle("§6§lpSurvivalFly");
     playerGui.addInput("您需要的飞行时长(分)：","","5");
-    playerGui.addLabel(`§6目前每分钟§e-${conf.get(price)}-§6金币`);
+    playerGui.addLabel("§6目前每分钟§e-"+conf.get(price)+"-§6金币");
     player.sendForm(playerGui,(player,data) => {
         if(data!=0){
             playerFly(player,data[0]);
@@ -68,11 +68,16 @@ function mgr_Gui(player){
     mgrGui.setTitle("§6§lpsFly-mgr");
     mgrGui.addDropdown("选择一个玩家让他飞行",onlinePlayer);
     mgrGui.addInput("飞行时间(分)","1");
+    mgrGui.addInput("修改飞行金币",`${conf.get(price)}`);
     player.sendForm(mgrGui,(player,data)=>{
-        if(data!=null){
+        if(data[1]!=null){
             playerFly(data[0],data[1])
         } else{
             player.tell("请输入飞行时间",4);
+        }
+        if(data[2]!=null){
+            conf.set("price",data[2]);
+            conf.reload();
         }
     })
 }
