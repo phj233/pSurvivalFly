@@ -11,6 +11,7 @@ if(!File.exists(`.\\plugins\\${PluginName}\\config.json`)){
     var conf = new JsonConfigFile(`.\\plugins\\${PluginName}\\config.json`);
     conf.init("price",60);
 }
+var conf = new JsonConfigFile(`.\\plugins\\${PluginName}\\config.json`);
 
 mc.listen("onServerStarted", () => {
     let cmd = mc.newCommand("psfly", "§6pfly§e生存飞行",PermType.Any);
@@ -52,9 +53,9 @@ function p_Gui(player){
     let playerGui = mc.newCustomForm();
     playerGui.setTitle("§6§lpSurvivalFly");
     playerGui.addInput("您需要的飞行时长(分)：","","5");
-    playerGui.addLabel("§6目前每分钟§e-"+conf.get(price)+"-§6金币");
+    playerGui.addLabel("§6目前每分钟§e-"+conf.get("price")+"-§6金币");
     player.sendForm(playerGui,(player,data) => {
-        if(data!=0){
+        if(data[0]!=null){
             playerFly(player,data[0]);
         } else{
             player.tell("请输入数值",4);
@@ -68,7 +69,7 @@ function mgr_Gui(player){
     mgrGui.setTitle("§6§lpsFly-mgr");
     mgrGui.addDropdown("选择一个玩家让他飞行",onlinePlayer);
     mgrGui.addInput("飞行时间(分)","1");
-    mgrGui.addInput("修改飞行金币",`${conf.get(price)}`);
+    mgrGui.addInput("修改飞行金币",`${conf.get("price")}`);
     player.sendForm(mgrGui,(player,data)=>{
         if(data[1]!=null){
             playerFly(data[0],data[1])
@@ -87,18 +88,15 @@ function playerFly(pl,data){
     time=Number(time);
     let player = pl.realName;
     if(!pl.isOP()){
-        money.reduce(pl.xuid,time*price);    
+        money.reduce(pl.xuid,time*conf.get("price"));    
     }
     mc.runcmd(`ability ${player} mayfly true`);
+    mc.runcmd("effect ${player} slow_falling "+(time+35));
     setTimeout(function(){
         mc.runcmd(`ability ${player} mayfly false`);
-        if(pl.inAir){
-            mc.runcmd(`effect ${player} slow_falling 35`);
-        }
     },time*60*1000);
 }
 
 function getNumber(data) {
     return JSON.parse(data);
 }
-
